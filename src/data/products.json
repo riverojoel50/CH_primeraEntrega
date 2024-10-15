@@ -1,0 +1,58 @@
+[
+     {
+          "id": 1,
+          "title": "Televisor 4K Ultra HD",
+          "description": "Televisor 4K de 55 pulgadas con HDR y Smart TV.",
+          "code": "TV001",
+          "price": 599.99,
+          "status": true,
+          "stock": 30,
+          "category": "Electrónica",
+          "thumbnails": [
+               "https://example.com/images/televisor/img1.jpg",
+               "https://example.com/images/televisor/img2.jpg"
+          ]
+     },
+     {
+          "id": 2,
+          "title": "Lavadora Automática",
+          "description": "Lavadora de carga frontal con tecnología de ahorro de energía.",
+          "code": "LAV001",
+          "price": 399.99,
+          "status": true,
+          "stock": 20,
+          "category": "Electrodomésticos",
+          "thumbnails": [
+               "https://example.com/images/lavadora/img1.jpg",
+               "https://example.com/images/lavadora/img2.jpg"
+          ]
+     },
+     {
+          "id": 3,
+          "title": "Freidora de Papas",
+          "description": "Freidora de papas eléctrica con capacidad para 2 kg.",
+          "code": "FRE001",
+          "price": 79.99,
+          "status": true,
+          "stock": 100,
+          "category": "Cocina",
+          "thumbnails": [
+               "https://example.com/images/freidora/img1.jpg",
+               "https://example.com/images/freidora/img2.jpg"
+          ]
+     },
+     {
+          "id": 4,
+          "title": "Heladera No Frost",
+          "description": "Heladera con sistema No Frost, 350 litros de capacidad.",
+          "code": "HLF123",
+          "price": 75000,
+          "status": false,
+          "stock": 15,
+          "category": "Electrodomésticos",
+          "thumbnails": [
+               "https://example.com/images/heladera_1.jpg",
+               "https://example.com/images/heladera_2.jpg"
+          ]
+     }
+]
