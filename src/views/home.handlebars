@@ -1,0 +1,53 @@
+<div class="container my-5">
+    <h1 class="text-center mb-4">Lista de Productos</h1>
+
+    <ul class="list-group">
+        {{#each products}}
+        <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-column">
+                    <strong>{{this.title}}</strong>
+                    <span>{{this.description}}</span>
+                    <span class="text-muted">Precio: ${{this.price}}</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <input 
+                        type="number" 
+                        class="form-control form-control-sm me-2" 
+                        style="width: 80px;" 
+                        id="quantity-{{this.id}}" 
+                        min="1" 
+                        value="1">
+                    <button 
+                        class="btn btn-primary btn-sm" 
+                        onclick="addToCart('{{this.id}}')">
+                        Agregar al carrito
+                    </button>
+                </div>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+
+    <div class="d-flex justify-content-center align-items-center mt-4">
+        <a href="/products/?page=1" class="btn btn-outline-secondary me-2">Primera</a>
+
+        {{#if hasPrevPage}}
+        <a href="/products/?page={{prevPage}}" class="btn btn-outline-primary me-2">Anterior</a>
+        {{else}}
+        <button class="btn btn-outline-secondary me-2" disabled>Anterior</button>
+        {{/if}}
+
+        {{#if hasNextPage}}
+        <a href="/products/?page={{nextPage}}" class="btn btn-outline-primary me-2">Siguiente</a>
+        {{else}}
+        <button class="btn btn-outline-secondary me-2" disabled>Siguiente</button>
+        {{/if}}
+
+        <a href="/products/?page={{totalPages}}" class="btn btn-outline-secondary">Última</a>
+    </div>
+
+    <div class="text-center mt-4">
+      <button class="btn btn-success" onclick="redirectToCart()">Agregar al carrito</button>
+    </div>
+</div>

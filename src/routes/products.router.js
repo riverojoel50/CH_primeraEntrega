@@ -1,28 +1,28 @@
 import {Router} from "express";
 import { ProductsManager } from "../dao/ProductsManager.js";
+import {ProductsDAO} from "../dao/ProductsDAO.js"
 import { logError } from "../utils.js";
 import { dirname } from 'path';
+import { productsModel } from "../dao/models/products.model.js";
 
 export const router = Router()
 ProductsManager.setPath("./src/data/products.json")
 
 
 router.get("/", async (req,res) =>{
-    let {limit} = req.query
-    let products = await ProductsManager.getProducts()
-    if(limit){
-        limit=Number(limit)
-        if(isNaN(limit)){
-            res.setHeader('Content-Type','application/json');
-            return res.status(400).json({error:`limit debe ser numérico`})
-        }
 
-        products=products.slice(0, limit)
+    let {page, limit, category, status, sort} = req.query
+    //Status: parametro que utilizaremos para verificar disponibiliadd.
 
+    let products = await ProductsDAO.getProducts(page, limit, category, status, sort)
+    products={
+        products:products.docs, 
+        ...products 
     }
+    delete products.docs
 
-    res.setHeader('Content-Type','application/json');
-    return res.status(200).json({products});
+    res.setHeader('Content-Type','application/json')
+    res.status(200).json(products)
 })
 
 

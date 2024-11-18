@@ -1,28 +1,18 @@
 import {Router} from "express";
 import { CartsManager } from "../dao/CartsManager.js";
+import {Types} from "mongoose";
 import { logError } from "../utils.js";
+import {CartsDAO} from "../dao/CartsDAO.js"
+import { ProductsDAO } from "../dao/ProductsDAO.js";
 
 
 export const router = Router()
-CartsManager.setPath("./src/data/carts.json")
 
-router.get("/:id", async (req,res) =>{
-    let {id} = req.params
-    id=Number(id)
-
-    if(isNaN(id)){
-        res.setHeader('Content-Type','application/json');
-        return res.status(400).json({error:`id debe ser numérico`})
-    }
-
+router.get("/:cid", async (req,res) =>{
     try{
-        let carts = await CartsManager.getCarts();
-
-        let cart = carts.find(c => c.id === id);
-        if(!cart){
-            res.setHeader('Content-Type','application/json');
-            return res.status(404).json({error:`No existen el carrito con id ${id}`})
-        }
+        console.log("entrada endopoiunt cart")
+        let {cid} = req.params
+        let cart = await CartsDAO.getCartsPopulate(cid);
 
         res.setHeader('Content-Type','application/json');
         return res.status(200).json({cart});
@@ -32,41 +22,104 @@ router.get("/:id", async (req,res) =>{
     }
 })
 
-router.post("/:cid/product/:pid", async(req,res) =>{
-    let {cid, pid } = req.params
-    cid=Number(cid)
-    pid=Number(pid)
+router.put("/:cid", async (req,res) =>{
+    let {cid} = req.params
+    let {products} = req.body
+    try{
 
-    
-    if(isNaN(cid)){
-        res.setHeader('Content-Type','application/json');
-        return res.status(400).json({error:`cid debe ser numérico`})
-    }
+        let newCart = await CartsDAO.updateCarts(cid,products)
 
-    if(isNaN(pid)){
-        res.setHeader('Content-Type','application/json');
-        return res.status(400).json({error:`pid debe ser numérico`})
+       res.setHeader('Content-Type','application/json');
+        return res.status(200).json({newCart});
+
     }
+    catch(error){
+        logError(res,error)
+    }
+})
+
+
+router.put("/:cid/product/:pid", async (req,res) =>{
+    let {cid, pid} = req.params
+    let {quantity} = req.body
 
     try{
-        let carts = await CartsManager.getCarts()
-        let cart = carts.find(c => c.id === cid)
-
-        if(!cart){
-            res.setHeader('Content-Type','application/json');
-                return res.status(404).json({error:`No existen el carrtido con cid ${cid}`})
-        }
-
-        if(cart.products.find(p => p.id === pid)){
-            carts = await CartsManager.updateCart(cid,pid)
-        }
-        else{
-            carts = await CartsManager.insertCart(cid,pid)
-        }
+        let cart = await CartsDAO.getCarts(cid);
+        let newCart;
         
+        for(const product of cart[0].products){
+            if(product.productId == pid){
+                product.quantity =  product.quantity + quantity
+                newCart = await CartsDAO.updateCarts(cid,cart[0].products)
+                break;
+            }
+            else{
+                newCart = await CartsDAO.newItemCarts(cid,pid,quantity)
+                break;
+            }
+        }
 
         res.setHeader('Content-Type','application/json');
-        return res.status(200).json({carts});
+        return res.status(200).json({newCart});
+
+    }
+    catch(error){
+        logError(res,error)
+    }
+})
+
+
+router.delete("/:cid/product/:pid", async (req,res) =>{
+    let {cid, pid} = req.params
+    let {quantity} = req.body
+
+    try{
+        let cart = CartsDAO.getCarts(cid);
+    
+        const newProducts = cart.products.find(p => p.id !== id)
+        let newCart = await CartsDAO.updateCarts(cid,newProducts)
+        
+        res.setHeader('Content-Type','application/json');
+        return res.status(200).json({newCart});
+
+    }
+    catch(error){
+        logError(res,error)
+    }
+})
+
+router.delete("/:cid", async (req,res) =>{
+    let {cid} = req.params
+
+    try{
+        let cart = await CartsDAO.getCarts(cid)
+        cart.products = [];
+
+
+        let newCart = await CartsDAO.updateCarts(cid);
+        res.setHeader('Content-Type','application/json');
+        return res.status(200).json({newCart});
+
+    }
+    catch(error){
+        logError(res,error)
+    }
+})
+
+
+router.post("/:cid/product/:pid", async(req,res) =>{
+    let {cid, pid } = req.params
+    let {quantity} = req.body
+
+    try{
+        let newCart;
+        //Si es el primer articulo a ingresar entonces se crea el carrito.
+        if(cid === "0"){
+            newCart = await CartsDAO.insertCarts(pid,quantity)
+        }
+
+        res.setHeader('Content-Type','application/json');
+        return res.status(200).json({newCart});
     }
     catch(error){
         logError(res,error)
