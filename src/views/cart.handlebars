@@ -1,17 +1,23 @@
 <div class="container my-5">
     <h1 class="text-center mb-4">Carrito</h1>
+    <div class="text-center mb-4">
+        <button class="btn btn-danger" onclick="eliminarTodos('{{cid}}')">Eliminar todos los productos</button>
+    </div>
 
     <ul class="list-group">
-        {{#each products}}
-        <li class="list-group-item">
+        {{#each products}} 
+        <li id='{{this.productId._id}}' class="list-group-item">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex flex-column">
-                    <strong>{{this.productId}}</strong>
-                    <span>{{this.quantity}}</span>
+                    <strong>{{this.productId.title}}</strong> 
+                    <span>{{this.productId.description}}</span> 
+                    <span><strong>Cantidad:</strong> {{this.quantity}}</span>
+                    <span><strong>Precio:</strong> ${{this.productId.price}}</span>
+
+                    <button class="delete-button" data-id="{{this.productId._id}}" data-cid='{{cid}}' onclick="eliminarProducto('{{this.productId._id}}', '{{cid}}')">Eliminar</button>
                 </div>
             </div>
         </li>
         {{/each}}
     </ul>
-
 </div>

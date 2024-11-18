@@ -3,7 +3,7 @@
 
     <ul class="list-group">
         {{#each products}}
-        <li class="list-group-item">
+        <li class="list-group-item" ondblclick="redirectToProduct('{{this.id}}')">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex flex-column">
                     <strong>{{this.title}}</strong>

@@ -71,14 +71,13 @@ router.put("/:cid/product/:pid", async (req,res) =>{
 
 router.delete("/:cid/product/:pid", async (req,res) =>{
     let {cid, pid} = req.params
-    let {quantity} = req.body
 
     try{
-        let cart = CartsDAO.getCarts(cid);
+        let cart = await CartsDAO.getCarts(cid);
+
+        let products = cart[0].products.filter(p => p.productId != pid) 
     
-        const newProducts = cart.products.find(p => p.id !== id)
-        let newCart = await CartsDAO.updateCarts(cid,newProducts)
-        
+        let newCart = await CartsDAO.updateCarts(cid,products)
         res.setHeader('Content-Type','application/json');
         return res.status(200).json({newCart});
 
@@ -92,11 +91,7 @@ router.delete("/:cid", async (req,res) =>{
     let {cid} = req.params
 
     try{
-        let cart = await CartsDAO.getCarts(cid)
-        cart.products = [];
-
-
-        let newCart = await CartsDAO.updateCarts(cid);
+        let newCart = await CartsDAO.updateCarts(cid,[])
         res.setHeader('Content-Type','application/json');
         return res.status(200).json({newCart});
 

@@ -2,14 +2,13 @@ import { Router } from 'express';
 import { ProductsManager } from "../dao/ProductsManager.js";
 import { ProductsDAO } from '../dao/ProductsDAO.js';
 import { CartsDAO } from '../dao/CartsDAO.js';
+import { mongoose } from 'mongoose';
+import { productsModel } from '../dao/models/products.model.js';
 
 export const router=Router()
 
-let products = //await ProductsDAO.getProducts()
-
 router.get('/products', async (req,res)=>{
     let {page, limit, category, status, sort} = req.query
-    //Status: parametro que utilizaremos para verificar disponibiliadd.
 
     let {docs: products, totalPages, hasNextPage, hasPrevPage, nextPage, prevPage} = await ProductsDAO.getProducts(page, limit, category, status, sort)
 
@@ -28,21 +27,34 @@ router.get('/products', async (req,res)=>{
 
 router.get('/cart/:cid', async (req,res)=>{
     let {cid} = req.params
-    let carts = await CartsDAO.getCarts(cid)
-
-    let {docs: cartss,} = await CartsDAO.getCarts(cid)
-
+    let carts = await CartsDAO.getCartsPopulate(cid)
+    
     let products = carts[0].products.map(product => ({
-        ...product,
-        productId: product.productId.toString()
+        productId: product.productId.toObject(), 
+        quantity: product.quantity,
+        cid: cid
     }));
 
-    //let products = carts[0].products
-    console.log(cartss.products)
-
     res.render("cart", {
-        products
+        products,
+        cid
+    });
+
+})
+
+
+router.get('/product/:pid', async (req,res)=>{
+    let {pid} = req.params
+
+    const product = await productsModel.findById(pid);
+
+    const plainProduct = product.toObject();
+
+    res.render("product", {
+        product: plainProduct
     })
 
 })
+
+
 

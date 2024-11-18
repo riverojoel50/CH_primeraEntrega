@@ -45,7 +45,42 @@ const addToCart = async (pid) => {
 
 
 function redirectToCart() {
-    console.log("redirectCArt")
     if(idCart != "0")
-        window.location.href = `/cart/cid=${idCart}`
+        window.location.href = `/cart/${idCart}`
+}
+
+
+async function eliminarProducto(pid, cid){
+    const itemToRemove = document.getElementById(pid);
+    if (itemToRemove) {
+        itemToRemove.remove();
+    }
+
+    let response = await fetch(`/api/carts/${cid}/product/${pid}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+
+}
+
+function redirectToProduct(pid){
+    console.log("idredirect product" + pid)
+    window.location.href = `/product/${pid}`
+}
+
+async function eliminarTodos(cid) {
+    console.log(cid) 
+
+    let response = await fetch(`/api/carts/${cid}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+
+
+    window.location.reload();
 }

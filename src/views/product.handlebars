@@ -1,0 +1,16 @@
+<div class="container my-5">
+    <h1 class="text-center mb-4">{{product.title}}</h1>
+
+
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>{{product.description}}</h3>
+            <p><strong>Precio:</strong> ${{product.price}}</p>
+            <p><strong>Categoría:</strong> {{product.category}}</p>
+            <p><strong>Stock:</strong> {{product.stock}}</p>
+            <p><strong>Estado:</strong> {{#if product.status}}Disponible{{else}}No disponible{{/if}}</p>
+        </div>
+    </div>
+</div>
